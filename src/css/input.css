@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+@layer utilities {
+  .row {
+    @apply flex justify-evenly items-center px-3 landscape:px-2 flex-1 py-1 landscape:py-0.5;
+  }
+
+  .key {
+    @apply text-[1.7rem] rounded-[50%] w-[60px] h-[60px] flex items-center justify-center md:w-[75px] md:h-[75px] cursor-pointer landscape:w-[57px] landscape:h-[57px] landscape:text-[1.5rem];
+  }
+
+  .key-3d-gray {
+    @apply transition-all duration-150 shadow-[0_5.5px_1.5px_rgba(120,120,120,0.55)] active:translate-y-[5px] active:shadow-none;
+  }
+
+  .key-3d-000 {
+    @apply transition-all duration-150 shadow-[0_5.5px_1px_rgba(0,0,0,0.55)] active:translate-y-[5px] active:shadow-none;
+  }
+
+  .key-3d-orange {
+    @apply transition-all duration-150 shadow-[0_5.5px_1.5px_rgba(250,130,50,0.4)] active:translate-y-[5px] active:shadow-none;
+  }
+
+  .zero-3d {
+    @apply transition-all duration-150 shadow-[0_5.5px_1.5px_rgba(0,0,0,0.55)] active:translate-y-[5px] active:shadow-none landscape:w-[100px] landscape:h-[55px] landscape:text-[1.4rem];
+  }
+
+  .landKeys {
+    @apply hidden transition-all duration-150 text-[1.7rem] rounded-[50%] w-[60px] h-[60px] items-center justify-center md:w-[75px] md:h-[75px] cursor-pointer bg-[#333333] shadow-[0_5.5px_1.5px_rgba(0,0,0,0.65)] landscape:flex landscape:w-[57px] landscape:h-[57px] landscape:text-[1.4rem] active:translate-y-[5px] active:shadow-none;
+  }
+
+  .calculator-container {
+    @apply w-[300px] h-[470px] md:w-[400px] md:h-[570px] landscape:w-[600px] landscape:h-[400px] bg-white rounded-3xl;
+  }
+
+  .display {
+    @apply text-black text-[2.7rem] pt-1 px-7 md:text-[3.5rem] landscape:text-[2.6rem] landscape:px-10;
+  }
+}

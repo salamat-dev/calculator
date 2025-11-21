@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tailwind Test</title>
+    <link href="./dist/output.css" rel="stylesheet" />
+  </head>
+  <body class="flex items-center justify-center min-h-screen bg-black">
+
+    <div class="w-[300px] h-[470px] bg-white rounded-3xl md:w-[400px] md:h-[570px] landscape:w-[740px] landscape:h-[410px]">
+      <div class="text-white w-full h-full flex flex-col justify-between landscape:w-full landscape:h-full">
+        <div class="display">0</div>
+        <div class="keyboard h-full flex flex-col w-full py-3">
+
+          <div class="row">
+            <div class="landKeys show">(</div>
+            <div class="landKeys show">)</div>
+            <div class="landKeys" onclick="ceil()">Ceil</div>
+            <div class="landKeys" onclick="floor()">Floor</div>
+
+            <div class="key key-3d-gray clearAll bg-[#a5a5a5]">AC</div>
+            <div class="key key-3d-gray clearLast bg-[#a5a5a5]">C</div>
+            <div class="key key-3d-gray show bg-[#a5a5a5]">%</div>
+            <div class="key key-3d-orange show bg-[#ffa45c]">/</div>
+          </div>
+
+          <div class="row">
+            <div class="landKeys" onclick="power2()">X²</div>
+            <div class="landKeys" onclick="power3()">X³</div>
+            <div class="landKeys" onclick="powerxy()">Xʸ</div>
+            <div class="landKeys" onclick="showFunc('sqrt(')">√</div>
+
+            <div class="key key-3d-000 show bg-[#494949]">7</div>
+            <div class="key key-3d-000 show bg-[#494949]">8</div>
+            <div class="key key-3d-000 show bg-[#494949]">9</div>
+            <div class="key key-3d-orange show bg-[#ffa45c]">*</div>
+          </div>
+
+          <div class="row">
+            <div class="landKeys" onclick="showFunc('sqrt3(')">∛</div>
+            <div class="landKeys" onclick="showFunc('log(')">log</div>
+            <div class="landKeys" onclick="factorial()">X!</div>
+            <div class="landKeys" onclick="inverse()">1/X</div>
+
+            <div class="key key-3d-000 show bg-[#494949]">4</div>
+            <div class="key key-3d-000 show bg-[#494949]">5</div>
+            <div class="key key-3d-000 show bg-[#494949]">6</div>
+            <div class="key key-3d-orange show bg-[#ffa45c]">-</div>
+          </div>
+
+          <div class="row">
+            <div class="landKeys" onclick="showFunc('sin(')">sin</div>
+            <div class="landKeys" onclick="showFunc('cos(')">cos</div>
+            <div class="landKeys" onclick="showFunc('tan(')">tan</div>
+            <div class="landKeys" onclick="showFunc('cot(')">cot</div>
+
+            <div class="key key-3d-000 show bg-[#494949]">1</div>
+            <div class="key key-3d-000 show bg-[#494949]">2</div>
+            <div class="key key-3d-000 show bg-[#494949]">3</div>
+            <div class="key key-3d-orange show bg-[#ffa45c]">+</div>
+          </div>
+
+          <div class="row">
+            <div class="landKeys show">00</div>
+            <div class="landKeys" onclick="showPi()">π</div>
+            <div class="landKeys">Rad</div>
+            <div class="landKeys" onclick="abValeu()">|X|</div>
+
+            <div class="zero show zero-3d bg-[#494949] cursor-pointer flex justify-center items-center w-[126px] h-[57px] md:h-[75px] rounded-[25px] md:rounded-[30px] landscape:w-[135px] landscape:md:h-[55px] landscape:md:w-[135px]">
+              <div class="ke text-[1.7rem]">0</div>
+            </div>
+            <div class="key key-3d-000 show bg-[#494949]">.</div>
+            <div class="key calculate key-3d-orange bg-[#ffa45c]">=</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </body>
+
+<script>
+let displayBox = document.querySelector('.display'); // select the display area
+
+document.querySelector('.clearAll').addEventListener('click', clearAll); // clear all when AC pressed
+document.querySelector('.clearLast').addEventListener('click', clearLast); // remove last char when C pressed
+document.querySelector('.calculate').addEventListener('click', calculate); // calculate result when = pressed
+
+let list = document.querySelectorAll('.show'); // select all buttons with class show
+list.forEach((item) => {
+  item.addEventListener('click', showDisplay); // add click event for each number/operator
+});
+
+let waitForPower = false; // to track x^y button pressed
+
+function replaceLastNumber(fn) { // replace last number in display with a function
+  let x = displayBox.innerText; // get current display text
+  let match = x.match(/(\d+(\.\d+)?)(?!.*\d)/); // find last number
+  if (!match) { 
+    displayBox.innerText = "Error"; // if no number found, show Error
+    return null;
+  }
+  let last = match[0]; // last number as string
+  let index = match.index; // start index of last number
+  let num = parseFloat(last); // convert to number
+  let result = fn(num); // apply the function to number
+  if (!isFinite(result)) { 
+    displayBox.innerText = "Error"; // if result is not finite, show Error
+    return null;
+  }
+  let newExp = x.substring(0, index) + result; // replace last number with result
+  displayBox.innerText = newExp; // update display
+  return result; // return result
+}
+
+function showDisplay(e){ // handle numbers and operators click
+  const x = e.target.innerText; // get button text
+  if(displayBox.innerText === "Error" || displayBox.innerText === "0"){ 
+    displayBox.innerText = x; // replace Error or 0
+  } else {
+    displayBox.innerText += x; // add to display
+  }
+}
+
+function showFunc(f){ // show function text like sqrt, sin
+  if(displayBox.innerText === "Error" || displayBox.innerText === "0"){ 
+    displayBox.innerText = f; // replace Error or 0
+  } else {
+    displayBox.innerText += f; // add function to display
+  }
+}
+
+function clearAll(){ 
+  displayBox.innerText = '0'; // set display to 0
+}
+
+function clearLast (){ 
+  let cur = displayBox.innerText; // get current text
+  if (cur.length <= 1){ 
+    displayBox.innerText = '0'; // if only 1 char, reset to 0
+  } else if(cur == 'Error'){ 
+    clearAll(); // if Error, clear all
+  } else {
+    displayBox.innerText = cur.slice(0, -1); // remove last char
+  }
+}
+
+function autoCloseParentheses(e){ 
+  const open = (e.match(/\(/g) || []).length; // count open brackets
+  const close = (e.match(/\)/g) || []).length; // count close brackets
+  const diff = open - close; 
+  if(diff > 0){
+      e += ')'.repeat(diff); // add missing closing brackets
+  }
+  return e; // return corrected expression
+}
+
+function powerxy() { 
+  displayBox.innerText += "^"; // show ^ symbol
+  waitForPower = true; // mark x^y pressed
+}
+
+function calculate() { 
+  let x = displayBox.innerText; // get display
+  if (/[+\-*/^.]$/.test(x)) { 
+    x = x.slice(0, -1); // remove last operator if any
+  }
+  x = autoCloseParentheses(x); // fix brackets
+
+  try {
+    // convert functions to JS Math
+    x = x.replace(/sin\(([^)]+)\)/g, "Math.sin(($1) * Math.PI / 180)");
+    x = x.replace(/cos\(([^)]+)\)/g, "Math.cos(($1) * Math.PI / 180)");
+    x = x.replace(/tan\(([^)]+)\)/g, "Math.tan(($1) * Math.PI / 180)");
+    x = x.replace(/cot\(([^)]+)\)/g, "1/Math.tan(($1) * Math.PI / 180)");
+    x = x.replace(/sqrt\(([^)]+)\)/g, "Math.sqrt($1)"); 
+    x = x.replace(/sqrt3\(([^)]+)\)/g, "Math.cbrt($1)"); 
+    x = x.replace(/ln\(([^)]+)\)/g, "Math.log($1)");
+    x = x.replace(/log\(([^)]+)\)/g, "Math.log10($1)");
+    x = x.replace(/\|([^\|]+)\|/g, "Math.abs($1)");
+
+    while (/\d+(\.\d+)?\s*\^\s*\d+(\.\d+)?/.test(x)) { 
+      x = x.replace(/(\d+(\.\d+)?)\s*\^\s*(\d+(\.\d+)?)/g, "Math.pow($1,$3)"); 
+    }
+
+    
+    x = x.replace(/(\d+(\.\d+)?)%(\d+(\.\d+)?)/g, "($3 * $1 / 100)");
+    x = x.replace(/(\d+(\.\d+)?)%/g, "($1/100)"); // convert % to fraction
+
+    x = x.replace(/(\d+)!/g, "factorial($1)"); // factorial
+
+    let result = eval(x); // calculate JS expression
+
+    if (!isFinite(result)) { 
+      displayBox.innerText = "Error"; // check infinity
+      return;
+    }
+    displayBox.innerText = result; // show result
+
+  } catch (err) { 
+    displayBox.innerText = "Error"; // catch invalid expression
+  }
+}
+
+// functions to use replaceLastNumber
+function ceil() { replaceLastNumber(num => Math.ceil(num)) }
+function floor() { replaceLastNumber(num => Math.floor(num)) }
+function sqrt() { showFunc('sqrt('); } 
+function sqrt3() { showFunc('sqrt3('); } 
+function _log() { replaceLastNumber(num => num > 0 ? Math.log10(num) : NaN); }
+function factorial() {
+  replaceLastNumber(num => {
+    if (num < 0 || !Number.isInteger(num)) return NaN; 
+    let f = 1;
+    for (let i = 1; i <= num; i++) f *= i; 
+    return f; 
+  });
+}
+
+function inverse() { replaceLastNumber(num => num === 0 ? NaN : 1 / num); }
+function sinFn() { replaceLastNumber(num => Math.sin(num * Math.PI / 180)); }
+function cosFn() { replaceLastNumber(num => Math.cos(num * Math.PI / 180)); }
+function tanFn() { replaceLastNumber(num => Math.tan(num * Math.PI / 180)); }
+function cotFn() { replaceLastNumber(num => 1 / Math.tan(num * Math.PI / 180)); }
+function power2() { replaceLastNumber(num => num * num); }
+function power3() { replaceLastNumber(num => num * num * num); }
+function abValeu() {
+  let cur = displayBox.innerText;
+  let match = cur.match(/(\-?\d+(\.\d+)?)(?!.*\d)/);
+  
+  if (!match) {
+    displayBox.innerText = "Error";
+    return;
+  }
+
+  let num = parseFloat(match[0]);
+  let result = Math.abs(num);
+
+  displayBox.innerText = cur.slice(0, match.index) + result;
+}
+
+function showPi(){ 
+  if(displayBox.innerText === '0') displayBox.innerText = '3.14';
+  else displayBox.innerText += '3.14';
+}
+</script>
+
+
+
+
+</html>
